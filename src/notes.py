@@ -16,7 +16,7 @@ import sys      # Python standard library (interpreter related functions)
 
 __author__ = "Sergei Abramenkov"
 __copyright__ = "Copyright 2022, NSU GeoHack"
-__credits__ = ["Darina Ilyuhina", "Martina Terskaya", 
+__credits__ = ["Darina Ilyukhina", "Martina Terskaya", 
                 "Kristina Potapova", "Vasiliy Potapov"]
 __license__ = "MIT"
 __version__ = "0.0.1"
