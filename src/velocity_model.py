@@ -2,32 +2,46 @@
 # -*- coding: utf-8 -*-
 # TomoHack/src/velocity_model.py
 
-"""We import image, change the color to the white-black spectrum
-and make the array from the pixels.
+"""Functions related to the parametrization of a velocity model.
+
+Can be used as a script with command line arguments.
+Module is primarily based on NumPy package for linear algebra manipulations.
+Python Image Library (PIL) is used for picture reading and drawing.
 """
+################################### IMPORTS ##################################
 
-import sys      # Python standard library (interpreter related functions)
+# Python standard library imports
+import sys
 
+# Necessary packages
 from PIL import Image
 from numpy import asarray
 
-
-__author__ = ["Martina Terskaya", "Darina Ilyukhina"]
-__copyright__ = ["Darina Ilyukhina", "Martina Terskaya"]
-__credits__ = ["Sergei Abramenkov","Darina Ilyukhina", "Martina Terskaya", 
-                "Kristina Potapova", "Vasiliy Potapov"]
-__license__ = "MIT"
-__version__ = "0.0.1"
+# Project modules
+from notes import __status__, __email__, __maintainer__, __credits__
 
 
+############################### GLOBAL CONSTANTS #############################
+__author__    = "Martina Terskaya, Darina Ilyukhina and Sergei Abramenkov"
+__copyright__ = "Copyright 2022, NSU GeoHack"
+__license__   = "MIT"
+__version__   = "0.0.2"
+
+# Velocity limitations for a model
 V_MIN = 0.3 # km/s
 V_MAX = 2.3 # km/s
 
+
+############################# CLASSES & FUNCTIONS ############################
+
+"""Read image, change colorspace to grayscale and make NumPy array from it.
+"""
 def read_picture(path):
     image = Image.open(path) 
-    print(image.mode)
     gray_scale = image.convert(mode='L')
-    #gray_scale.show() 
+    image.show()
+    gray_scale.show()
+    print(image.mode)
     print(gray_scale.mode)
     
     velmod = asarray(gray_scale)
@@ -37,11 +51,12 @@ def read_picture(path):
     return(velmod)
     
 
-
+############################### SCRIPT BEHAIVIOR #############################
 if __name__ == '__main__':
-    print(f'Arguments count: {len(sys.argv)}')
     for i, arg in enumerate(sys.argv):
-        print(f'Argument {i}: {arg}')
+        print(f'Command line argument {i}: {arg}')
     if len(sys.argv) == 2:
+        print(f'Reading {sys.argv[1]} picture as a velocity model')
         read_picture(sys.argv[1])
-
+    print(f'Exiting script {__file__} without errors.')
+    exit(0)

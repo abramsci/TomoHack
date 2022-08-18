@@ -1,65 +1,88 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# PycharmProjects\GeoHack\guitk.py
+# TomoHack/src/guitk.py
 
-"""Graphical user interface for the seismic tomography program.
-Graphical interface for working with the main blocks of tomography:
-velocity model parameterization, ray tracing, linearization, matrix inversion, visualization.
+"""Graphical user interface for working with blocks of tomography.
+
+Module is based on tkinter framework (inculeded in Python standard library).
+Python Image Library (PIL) is used for picture reading and drawing.
 """
-# import standard libraries
-import os
-from tkinter import Label, Button, Tk
-import tkinter.filedialog as fd
+################################### IMPORTS ##################################
 
+# Python standard library imports
+import tkinter as tk
+from tkinter.filedialog import askopenfilename
+
+# Necessary packages
 from PIL import Image, ImageTk
 
-# window dimensions
-WINDOW_WIDTH = 1200
-WINDOW_HEIGHT = 600
+# Project modules
+import velocity_model
+from notes import __status__, __email__, __maintainer__, __credits__
 
-IMAGE_PATH = None
 
-# Create a window gui
-class Window(Tk):
+############################### GLOBAL CONSTANTS #############################
+__author__    = "Vasiliy Potapov, Kristina Potapova and Sergei Abramenkov"
+__copyright__ = "Copyright 2022, NSU GeoHack"
+__license__   = "MIT"
+__version__   = "0.0.2"
+
+# Main window dimensions
+WINDOW_WIDTH = 1000
+WINDOW_HEIGHT = 700
+
+CANVAS_XSIZE = 600
+CANVAS_YSIZE = 600
+
+
+############################# CLASSES & FUNCTIONS ############################
+
+"""Root class for the application - main window inhereting from Tk class.
+
+Attributes (additional to Tk class):
+
+"""
+class Window(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title('TomoHack')
+        self.title('TomoHack GUI')
         self.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
         self.configure(bg='lightgreen')
-        #self.point_dict = {}
 
-        # creating a block with the selected image
-        self.pil_original = Image.new('RGB', (600, 600), 'lightgreen')
-        self.pil_image = Image.new('RGB', (600, 600), 'lightgreen')
-        self.tk_original = ImageTk.PhotoImage(self.pil_original)
-        self.label_original = Label(self, image=self.tk_original)
-        self.label_original.place(relx=0.5, rely=0.5, relwidth=0.5, relheight=0.5)
+        # Canvas for visualization
+        self.canvas = tk.Canvas(width=CANVAS_XSIZE, height=CANVAS_YSIZE)
+        self.canvas.pack(expand=tk.YES)
 
-        # image upload button
-        self.button_load = Button(text="Load", command=self.load)
-        self.button_load.place(relx=0.15, rely=0.0, relwidth=0.15, relheight=0.1)
+        # Button for selecting image via standard OS dialog
+        self.button_load = tk.Button(text="Load from image", 
+                                    command=self.load_image)
+        self.button_load.place(relwidth=0.15, relheight=0.1)
 
-    # load image file
-    def load(self):
+    """Load an image as a model via OS standard file choosing menu.
+    """
+    def load_image(self):
         try:
-            IMAGE_PATH = fd.askopenfilename(parent=self, initialdir=os.getcwd(),
-                                          title='Choose file',
-                                          filetypes=[('Image Files', ['.jpeg', '.jpg', '.png', '.bmp'])])
-            print(IMAGE_PATH)
-            if IMAGE_PATH:
-                self.pil_original = Image.open(IMAGE_PATH)
-                self.tk_original = ImageTk.PhotoImage(self.pil_original)
-                self.label_original.config(image=self.tk_original)
+            image_path = askopenfilename(
+                                parent=self,
+                                title='Choose file',
+                                filetypes=[('Image Files', 
+                                ['.jpeg', '.jpg', '.png', '.bmp'])]
+                                )
+            print(image_path)
+            if image_path:
+                self.original_image = Image.open(image_path)
+                self.thumbnail = ImageTk.PhotoImage(self.original_image)
+                self.canvas.create_image(0, 0, image=self.thumbnail,
+                                                anchor=tk.NW)
         except FileNotFoundError:
             pass
+        return image_path
 
-    # start create gui
     def run(self):
         self.mainloop()
 
 
-
+############################### SCRIPT BEHAIVIOR #############################
 if __name__ == '__main__':
     app = Window()
     app.run()
-    #print(IMAGE_PATH)
