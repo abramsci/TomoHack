@@ -74,6 +74,11 @@ class Window(tk.Tk):
                                      command=self.stop_process)
         self.button_stop.place(relwidth=0.1, relheight=0.05, rely=0.165)
 
+        # Button to connect points of sources and receivers
+        self.button_to_connect = tk.Button(text='connect points',
+                                           command=self.connect_points)
+        self.button_to_connect.place(relwidth=0.1, relheight=0.05, rely=0.22)
+
         # Entries for coords of draw lines
         self.x_start = tk.IntVar()
         self.x_end = tk.IntVar()
@@ -106,13 +111,34 @@ class Window(tk.Tk):
         self.canvas_sint_model = tk.Canvas(width=CANVAS_XSIZE, height=CANVAS_YSIZE)
         self.canvas_sint_model.pack(expand=tk.YES)
 
+    def connect_points(self):
+        for i in range(len(self.sources)-1):
+            self.canvas_sint_model.create_line(self.sources[i][0], self.sources[i][1],
+                                               self.sources[i+1:i+2][0:1], self.sources[i+1:i+2][1:],
+                                               fill='pink')
+        for i in range(len(self.receivers)-1):
+            self.canvas_sint_model.create_line(self.receivers[i][0], self.receivers[i][1],
+                                               self.receivers[i+1][0], self.receivers[i+1][1],
+                                               fill='lightblue')
+
     def draw_line_x(self):
         self.canvas_sint_model.create_line(self.x_start.get(), self.y_start.get(),
-                                           self.x_end.get(), self.y_end.get())
+                                           self.x_end.get(), self.y_end.get(), fill='green')
+
     def stop_process(self):
         self.stop = True
-        print(f'LIST_SOURCES: {LIST_SOURCES}\n'+
-              f'LIST_RECEIVERS: {LIST_RECEIVERS}')
+        self.sources = sorted(LIST_SOURCES, key=lambda i: i[0])
+        self.receivers = sorted(LIST_RECEIVERS, key=lambda i: i[0])
+        print(f'LIST_SOURCES: {self.sources}\n'+
+              f'LIST_RECEIVERS: {self.receivers}')
+        for i in range(len(self.sources)-1):
+            self.canvas_sint_model.create_line(self.sources[i][0], self.sources[i][1],
+                                               self.sources[i+1][0], self.sources[i+1][1],
+                                               fill='pink')
+        for i in range(len(self.receivers)-1):
+            self.canvas_sint_model.create_line(self.receivers[i][0], self.receivers[i][1],
+                                               self.receivers[i+1][0], self.receivers[i+1][1],
+                                               fill='lightblue')
 
     def callback(self, event):
         if self.flag == 'source':
@@ -123,12 +149,12 @@ class Window(tk.Tk):
             self.canvas_sint_model.create_rectangle((event.x, event.y)*2, outline='blue')
 
     def add_sources(self):
+        self.flag = 'source'
+        self.canvas_sint_model.bind('<Button-1>', self.callback)
         if self.stop:
             self.stop = False
             self.canvas_sint_model.unbind('<Button-1>')
             return None
-        self.flag = 'source'
-        self.canvas_sint_model.bind('<Button-1>', self.callback)
 
     def add_receivers(self):
         self.flag = 'receiver'
