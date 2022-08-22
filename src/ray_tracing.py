@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # TomoHack/src/ray_tracing.py
 
-"""Template script that follows a decent coding style (based on PEP8).
+"""...
 """
 
 ################################### IMPORTS ##################################
@@ -11,12 +11,12 @@
 import sys
 import math
 import numpy as np
-import matplotlib
 
 # Necessary packages (not a part of standard library)
+from matplotlib import pyplot as plt
 
 # Project modules (in the same folder/repo)
-
+from notes import __status__, __email__, __maintainer__, __credits__
 
 ############################### GLOBAL CONSTANTS #############################
 __author__    = "Martina Terskaya, Darina Ilyukhina and Sergei Abramenkov"
@@ -26,75 +26,58 @@ __version__   = "0.0.2"
 
 ############################# CLASSES & FUNCTIONS ############################
 
+velmod = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+h = 1.0
+
+source = (0, 1)
+receiver = (2, 0)
 
 
+Class Ray2D()
+    def __init__(self, source, receiver):
+        self.time = None
+        self.source
+        self.receiver
+        
+    
 
+def trace(self, velmod):
+    # Obtaining straight line equation
+    a = (source[1] - receiver[1]) / (source[0] - receiver[0])
+    b = h * (source[1] + 0.5 - a * (source[0] + 0.5))
+    print(f"y = {a}x + {b}")
+    print(f"x = (y - {b}) / {a}")
 
+    # Looking for points on block edges
+    points = []
+    i_start = min(source[0], receiver[0]) + 1
+    i_end = max(source[0], receiver[0]) + 1
+    for i in range(i_start, i_end):
+        points.append((i * h, a * i * h + b))
+    j_start = min(source[1], receiver[1]) + 1
+    j_end = max(source[1], receiver[1]) + 1
+    for j in range(j_start, j_end):
+        points.append(((j * h - b) / a , j * h))
+
+    points.append(((source[0] + 0.5) * h, (source[1] + 0.5) * h))
+    points.append(((receiver[0] + 0.5) * h, (receiver[1] + 0.5) * h))
+    points.sort()
+    print(points)
+
+    #Counting time of a ray arrival
+    t_sum = 0
+    for k in range(len(points) - 1):
+        print(points[k], points[k + 1])
+        s = math.sqrt((points[k + 1][0] - points[k][0]) ** 2
+                        + (points[k + 1][1] - points[k][1]) ** 2)
+        i = int((points[k + 1][0] + points[k][0])/2)
+        j = int((points[k + 1][1] + points[k][1])/2)
+        t_sum = t_sum + s / velmod[i, j]
+        print(f'Segment distance = {s}; velocity = {velmod[i,j]} t_sum = {t_sum}')
 
 
 
 ############################### SCRIPT BEHAIVIOR #############################
-
-#Вводим координатную сетку
-arr = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
-coords_velocities = []
-
-for row in range(arr.shape[0]):
-    coords_velocities.append([])
-    for col in range(arr.shape[1]):
-        coords_velocities[row].append((col+0.5,  -(row+0.5)))
-print(coords_velocities)
-        
-# Сюда должны подставляться значения координат источника и приёмника
-#(по идее, если самый верхний левый пиксель это (1:1), то от этого числа нужно отнять 0.5)
-
-xs = 0.5
-xr = 2.5
-ys = -1.5
-yr = -0.5
-
-#для визуализации, которая не получилась
-source = [xs, ys]
-receiver = [xr, yr]
-plt.grid(which='major')
-plt.xlim([0, 3])  
-plt.ylim([0, 3])
-
-#Находим уравнение прямой
-k = (ys - yr) / (xs - xr)
-b = yr - k*xr
-#y = k*x + b
-print(f"y = {k}x + {b}")
-
-
-#Здесь я пыталась задать граничные значения range, чтобы итерироваться только по пикселям, которые нам нужны
-xmin = xs+0.5
-xmax = xr-0.5
-
-
-l = [] #пустой список для записи координат точек пересечения с гранями
-for x in range(1,3):   #здесь range надо задать по индексам матрицы 
-    if x % 1 == 0:
-        y = k*x + b
-        coords = tuple([x,y])
-        l.append(coords) 
-
-for y in range(-1,0):
-    if y % 1 == 0:
-        x = (y - b)/k
-        coords = tuple([x,y])
-        l.append(coords)
-
-l.sort() #сортируем по возрастанию х
-print(l)
-
-for index in range(len(l)+1):
-    #print(i[0], i[1])
-    # длина вектора по координатам s = ((x1 - x2)**2 + (y1 - y2)**2)**0.5 
-
-
-
-
 
 if __name__ == '__main__':
     print(f'Supplied {len(sys.argv)} command line arguments.')
@@ -102,3 +85,4 @@ if __name__ == '__main__':
         print(f'Command line argument {i}: {arg}')
     print(f'Exiting script {__file__} without errors.')
     exit(0)
+
