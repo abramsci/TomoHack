@@ -50,7 +50,7 @@ class Window(tk.Tk):
         self.title('TomoHack GUI')
         self.geometry(f'{WINDOW_WIDTH}x{WINDOW_HEIGHT}')
         self.configure(bg='lightgreen')
-        self.background_image = Image.open('tst\\vulkano.jpg')
+        self.background_image = Image.open('../tst//vulkano.jpg')
         self.background_image = ImageTk.PhotoImage(self.background_image)
         self.background_label = tk.Label(image=self.background_image)
         self.background_label.place(x=0, y=0, relwidth=1, relheight=1)
@@ -156,6 +156,7 @@ class Window(tk.Tk):
 
     def clear_canvas(self):
         self.canvas_sint_model.delete('all')
+        self.create_grid()
         LIST_SOURCES.clear()
         LIST_RECEIVERS.clear()
         self.sources.clear()
@@ -266,7 +267,7 @@ class Window(tk.Tk):
                 self.left_label.place(relx=0, rely=0.35, width=300, height=300)
 
                 self.resize_image = self.original_image.resize((32, 32), Image.Resampling.LANCZOS)
-                self.resize_image = self.resize_image.resize((CANVAS_XSIZE, CANVAS_YSIZE), Image.NEAREST)
+                self.resize_image = self.resize_image.resize((CANVAS_XSIZE, CANVAS_YSIZE), Image.Resampling.NEAREST)
                 (self.img_width, self.img_height) = self.resize_image.size
                 self.canvas_sint_model.config(width=self.img_width, height=self.img_height)
                 self.thumbnail = ImageTk.PhotoImage(self.resize_image)
