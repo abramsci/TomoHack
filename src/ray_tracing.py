@@ -5,7 +5,7 @@
 """
 Can be used as a script with command line arguments.
 Math library is implemented for elementary mathematical calculations.
-The imported model constitutes a NumPy array.
+The imported model is represented as a NumPy array.
 """
 
 ################################### IMPORTS ##################################
