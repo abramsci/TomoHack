@@ -2,7 +2,10 @@
 # -*- coding: utf-8 -*-
 # TomoHack/src/ray_tracing.py
 
-"""...
+"""
+Can be used as a script with command line arguments.
+Math library is implemented for elementary mathematical calculations.
+The imported model is represented as a NumPy array.
 """
 
 ################################### IMPORTS ##################################
@@ -56,15 +59,25 @@ R = (2, 0)
 ############################# CLASSES & FUNCTIONS ############################
 
 class Ray2D():
+    """Straight tomographic rays.
+
+    Rays are defined by the x and y coordinates of the source and receiver.
+    Ray tracing is based on the linear equation y = ax + b.
+    This equation is used for locating the points of intersection 
+    of rays with the model block edges, where the velocity changes. After that,
+    the lengths of the segments intersecting each velocity block are obtained.
+    Finally, the crossing time of each block is calculated by
+    dividing the length of the segment by the speed in the block.
     
-    def __init__(self, source_pos: int, receiver_pos: int):
+    """
+    def __init__(self, source_pos, receiver_pos):
         self.s = source_pos
         self.r = receiver_pos
         self.t = None 
         
     def trace(self, model: Model2D):
         """Trace itself in some velocity model"""
-        # Obtaining straight line equation
+        # Obtaining straight linear equation
         a = (self.s[1] - self.r[1]) / (self.s[0] - self.r[0])
         b = model.h * (self.s[1] + 0.5 - a * (self.s[0] + 0.5))
         print(f"y = {a}x + {b}")
